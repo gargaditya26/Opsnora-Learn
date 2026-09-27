@@ -1,0 +1,16 @@
+{
+  "name": "opsnora-learn",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "dev:ui": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "check": "node --check web/src/api.js && node --check web/src/main.js && node --check api/backend.js"
+  },
+  "devDependencies": {
+    "vite": "^7.1.7"
+  }
+}

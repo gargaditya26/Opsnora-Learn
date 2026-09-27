@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#070914">
+  <meta name="description" content="OPSNORA LEARN — Learn, build and level up.">
+  <title>OPSNORA LEARN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <main id="loginView" class="login-shell">
+    <section class="brand-panel">
+      <div class="logo-mark">O</div><p class="eyebrow">YOUR LEARNING OS</p>
+      <h1>OPSNORA<br><span>LEARN</span></h1><p class="tagline">Learn <i>•</i> Build <i>•</i> Level Up</p>
+      <div class="brand-proof"><span>✦</span><div><b>Progress that stays with you</b><small>Learn at your pace. Return anytime.</small></div></div>
+    </section>
+    <section class="login-card"><div class="mobile-brand">OPSNORA <span>LEARN</span></div><p class="eyebrow">WELCOME BACK</p><h2>Ready for your next level?</h2><p>Sign in to continue exactly where you left off.</p>
+      <form id="loginForm"><label>Student or admin ID<input id="loginId" autocomplete="username" placeholder="e.g. Aahana01" maxlength="60" required></label><label>PIN<input id="loginPin" type="password" autocomplete="current-password" placeholder="Enter your PIN" maxlength="100" required></label><button id="loginButton" class="primary wide" type="submit"><span>ENTER LEARNING SPACE</span><b>→</b></button></form><p id="loginError" class="form-error" role="alert"></p>
+    </section>
+  </main>
+  <div id="appView" class="app hidden">
+    <aside><a class="app-logo" href="#dashboard"><span>O</span><b>OPSNORA<em>LEARN</em></b></a><nav id="nav"><button data-view="dashboard" class="active">⌂ <span>Dashboard</span></button><button data-view="quiz">◇ <span>Quiz</span></button><button data-view="badges">✦ <span>Badges</span></button><button data-view="progress">↗ <span>Progress</span></button><button data-view="admin" class="admin-only hidden">▦ <span>Admin</span></button></nav><button id="logoutBtn" class="logout">↪ <span>Logout</span></button></aside>
+    <section class="content"><header><div><p class="eyebrow" id="headerKicker">STUDENT DASHBOARD</p><h2 id="pageTitle">Your learning space</h2></div><div class="profile-pill"><div class="avatar" id="avatar">A</div><div><b id="profileName">Learner</b><small id="profileClass">Class 8</small></div></div></header><div id="loading" class="loading hidden"><span></span><p>Loading your progress…</p></div><div id="screen"></div></section>
+  </div>
+  <div id="modal" class="modal hidden"><div class="modal-card"><div id="modalIcon" class="badge-big">🏆</div><p class="eyebrow">BADGE UNLOCKED</p><h2 id="modalTitle">Rising Star</h2><p id="modalText"></p><button id="modalClose" class="primary">AWESOME</button></div></div>
+  <script type="module" src="/src/main.js"></script>
+</body></html>
