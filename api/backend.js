@@ -3,7 +3,8 @@ const ALLOWED_ACTIONS = new Set([
   'practiceQuestion', 'submitAnswer', 'startQuiz', 'submitQuizAnswer', 'quizResult',
   'studentAssignments', 'openAssignment', 'saveAssignment', 'submitAssignment',
   'adminDashboard', 'studentDetail', 'awardManualXp', 'addQuestion',
-  'adminAssignments', 'adminSaveAssignment', 'adminSubmission', 'adminReviewAssignment'
+  'adminAssignments', 'adminSaveAssignment', 'adminSubmission', 'adminReviewAssignment',
+  'adminResetStudentProgress'
 ]);
 
 export default async function handler(request, response) {

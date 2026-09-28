@@ -13,3 +13,31 @@ function awardManualXp(token, studentId, activityType, description, amount) {
 function addQuestion(token, form) {
   try { requireSession_(token,'ADMIN'); const answer=clean_(form.correctAnswer,1).toUpperCase(); if(!['A','B','C','D'].includes(answer)) throw new Error('Correct answer must be A, B, C, or D.'); const required=['topic','question','optionA','optionB','optionC','optionD','explanation']; required.forEach(k=>{if(!clean_(form[k],1000)) throw new Error('Complete every required field.');}); const existing=rows_('Questions'), numeric=existing.map(q=>Number(String(q.QuestionID).replace(/\D/g,''))||0), id='Q'+String(Math.max(0,...numeric)+1).padStart(3,'0'); append_('Questions',{QuestionID:id,Topic:clean_(form.topic,80),SubTopic:clean_(form.subTopic,80),Difficulty:clean_(form.difficulty,30)||'Beginner',Question:clean_(form.question,1000),OptionA:clean_(form.optionA,500),OptionB:clean_(form.optionB,500),OptionC:clean_(form.optionC,500),OptionD:clean_(form.optionD,500),CorrectAnswer:answer,Explanation:clean_(form.explanation,1000),XP:Math.max(1,Math.min(100,asNumber_(form.xp,10))),Status:'Active'}); clearQuestionCache_(); return {ok:true,id:id}; } catch(e){return publicError_(e);}
 }
+
+function resetStudentProgress(token, studentId) {
+  try { return withLock_(function() {
+    requireSession_(token,'ADMIN');
+    const student=findStudent_(studentId);
+    if(!student)throw new Error('Student not found.');
+    if(String(student.Role||'STUDENT').toUpperCase()==='ADMIN')throw new Error('Administrator accounts cannot be reset.');
+    const id=String(student.StudentID), runIds=new Set(rows_('Quiz_Runs').filter(r=>r.StudentID===id).map(r=>r.RunID));
+    const counts={
+      attemptsDeleted:deleteRowsMatching_('Attempts',r=>r.StudentID===id),
+      progressDeleted:deleteRowsMatching_('Progress',r=>r.StudentID===id),
+      xpLogsDeleted:deleteRowsMatching_('XP_Log',r=>r.StudentID===id),
+      badgesDeleted:deleteRowsMatching_('Student_Badges',r=>r.StudentID===id),
+      quizAnswersDeleted:deleteRowsMatching_('Quiz_Run_Answers',r=>r.StudentID===id||runIds.has(r.RunID)),
+      quizRunsDeleted:deleteRowsMatching_('Quiz_Runs',r=>r.StudentID===id),
+      assignmentSubmissionsDeleted:deleteRowsMatching_('Assignment_Submissions',r=>r.StudentID===id)
+    };
+    updateRow_('Students',student._row,{TotalXP:0,Level:1,CurrentQuestion:1,TotalAttempted:0,CorrectAnswers:0,WrongAnswers:0,CurrentStreak:0,LongestStreak:0,LastActiveDate:''});
+    revokeSessions_(id);
+    return Object.assign({ok:true,success:true,studentId:id},counts);
+  }); } catch(e){return publicError_(e);}
+}
+
+function deleteRowsMatching_(sheetName, predicate) {
+  const matches=rows_(sheetName).filter(predicate).map(r=>r._row).sort((a,b)=>b-a), sheet=sheet_(sheetName);
+  matches.forEach(row=>sheet.deleteRow(row));
+  return matches.length;
+}
