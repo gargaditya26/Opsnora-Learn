@@ -26,11 +26,11 @@ function doPost(e) {
       adminDashboard: function() { return getAdminDashboard(payload.token); },
       studentDetail: function() { return getStudentDetail(payload.token, payload.studentId); },
       awardManualXp: function() { return awardManualXp(payload.token, payload.studentId, payload.activityType, payload.description, payload.amount); },
-      addQuestion: function() { return addQuestion(payload.token, payload.form || {}); }
-      ,adminAssignments: function() { return getAdminAssignments(payload.token); }
-      ,adminSaveAssignment: function() { return adminSaveAssignment(payload.token, payload.form || {}); }
-      ,adminSubmission: function() { return getAdminSubmission(payload.token, payload.submissionId); }
-      ,adminReviewAssignment: function() { return reviewAssignmentSubmission(payload.token, payload.submissionId, payload.decision, payload.remarks); }
+      addQuestion: function() { return addQuestion(payload.token, payload.form || {}); },
+      adminAssignments: function() { return getAdminAssignments(payload.token); },
+      adminSaveAssignment: function() { return adminSaveAssignment(payload.token, payload.form || {}); },
+      adminSubmission: function() { return getAdminSubmission(payload.token, payload.submissionId); },
+      adminReviewAssignment: function() { return reviewAssignmentSubmission(payload.token, payload.submissionId, payload.decision, payload.remarks); }
     };
     if (!Object.prototype.hasOwnProperty.call(routes, action)) throw new Error('Unknown API action.');
     return jsonResponse_(routes[action]());

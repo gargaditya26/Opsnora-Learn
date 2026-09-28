@@ -2,8 +2,8 @@ const ALLOWED_ACTIONS = new Set([
   'login', 'logout', 'studentDashboard', 'learningCatalog', 'nextQuestion',
   'practiceQuestion', 'submitAnswer', 'startQuiz', 'submitQuizAnswer', 'quizResult',
   'studentAssignments', 'openAssignment', 'saveAssignment', 'submitAssignment',
-  'adminDashboard', 'studentDetail', 'awardManualXp', 'addQuestion'
-  ,'adminAssignments', 'adminSaveAssignment', 'adminSubmission', 'adminReviewAssignment'
+  'adminDashboard', 'studentDetail', 'awardManualXp', 'addQuestion',
+  'adminAssignments', 'adminSaveAssignment', 'adminSubmission', 'adminReviewAssignment'
 ]);
 
 export default async function handler(request, response) {
