@@ -7,18 +7,22 @@ function setupDatabase_() {
     else { const current = s.getRange(1,1,1,Math.max(s.getLastColumn(), headers.length)).getValues()[0]; headers.forEach((h,i) => { if (!current.includes(h)) s.getRange(1,s.getLastColumn()+1).setValue(h); }); }
     s.setFrozenRows(1); s.getRange(1,1,1,s.getLastColumn()).setFontWeight('bold').setBackground('#251252').setFontColor('#ffffff');
   });
-  seedBadges_(); seedSettings_(); seedStudent_(); seedQuestions_();
+  seedBadges_(); seedSettings_(); seedStudent_(); seedQuestions_(); seedAssignments_();
   return 'Database ready. Now run setStudentPin_("Aahana01", "your secure PIN") and createAdmin_(...).';
 }
 function seedBadges_() {
-  if (rows_('Badges').length) return;
+  const existing = new Set(rows_('Badges').map(b => String(b.BadgeID)));
   [
     ['B001','First Step','Complete your first question','COMPLETED',1,'🚀','Active'],
     ['B002','Rising Star','Reach 100 XP','XP',100,'⭐','Active'], ['B003','XP Explorer','Reach 250 XP','XP',250,'🧭','Active'],
     ['B004','XP Champion','Reach 500 XP','XP',500,'🏆','Active'], ['B005','Perfect 10','Get 10 correct answers','CORRECT',10,'🎯','Active'],
     ['B006','Quiz Master','Complete 50 questions','COMPLETED',50,'🧠','Active'], ['B007','7 Day Streak','Maintain a 7-day streak','STREAK',7,'🔥','Active'],
-    ['B008','Supreme','Maintain a 30-day streak','STREAK',30,'👑','Active']
-  ].forEach(r => sheet_('Badges').appendRow(r));
+    ['B008','Supreme','Maintain a 30-day streak','STREAK',30,'👑','Active'],
+    ['B009','HTML Explorer','Complete 10 HTML questions','TOPIC_HTML',10,'🌐','Active'],
+    ['B010','First Coder','Complete your first coding assignment','ASSIGNMENTS',1,'💻','Active'],
+    ['B011','HTML Builder','Complete 5 HTML coding assignments','ASSIGNMENT_TOPIC_HTML',5,'🛠️','Active'],
+    ['B012','Coding Champion','Complete 10 coding assignments','ASSIGNMENTS',10,'🏅','Active']
+  ].filter(r => !existing.has(r[0])).forEach(r => sheet_('Badges').appendRow(r));
 }
 function seedSettings_() { if (!rows_('Settings').length) [['APP_NAME','OPSNORA LEARN','Application name'],['DAILY_QUIZ_SIZE','5','Reserved for future daily quiz']].forEach(r=>sheet_('Settings').appendRow(r)); }
 function seedStudent_() {
@@ -39,6 +43,15 @@ function seedQuestions_() {
     ['Q009','Computer Basics','Hardware','Beginner','Which component is often called the brain of a computer?','Monitor','CPU','Keyboard','SSD','B','The CPU executes instructions and performs calculations.',10,'Active'],
     ['Q010','Computer Basics','Storage','Beginner','Which is a long-term storage device?','RAM','Cache','SSD','Register','C','An SSD retains data when power is off.',10,'Active']
   ]; q.forEach(r => sheet_('Questions').appendRow(r));
+}
+
+function seedAssignments_() {
+  if (rows_('Assignments').length) return;
+  const created=now_(), items=[
+    ['A001','My First Web Page','HTML','Beginner','Create your first complete web page.','Build a simple page that introduces you.','Add one h1 heading|Add two paragraphs|Add one button','<!-- Start coding here -->\n<h1>My First Web Page</h1>','/* Add your styles here */',50,1,'Active',created,created],
+    ['A002','Student Profile Card','HTML & CSS','Beginner','Create a profile card about yourself.','Combine HTML and CSS to make a clean student profile card.','Add a name heading|Add a short introduction|Add one image|Add one button|Add a background color|Add basic spacing','<div class="profile-card">\n  <h1>Your Name</h1>\n  <!-- Keep building -->\n</div>','.profile-card {\n  /* Style your card */\n}',75,2,'Active',created,created],
+    ['A003','My Favourite Hobby','HTML & CSS','Beginner','Build a colourful page about your favourite hobby.','Explain your hobby using structured HTML and simple CSS.','Add one heading|Add one paragraph|Add one list|Add one image|Add basic CSS styling','<h1>My Favourite Hobby</h1>\n<!-- Tell us more -->','body {\n  font-family: Arial, sans-serif;\n}',75,3,'Active',created,created]
+  ]; items.forEach(r=>sheet_('Assignments').appendRow(r));
 }
 
 function setStudentPin_(studentId, newPin) { return setUserPin_(studentId, newPin); }

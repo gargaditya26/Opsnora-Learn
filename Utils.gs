@@ -25,6 +25,15 @@ function safeEqual_(a, b) { a = String(a); b = String(b); if (a.length !== b.len
 function clean_(v, max) { return String(v == null ? '' : v).trim().slice(0, max || 500); }
 function asNumber_(v, fallback) { const n = Number(v); return Number.isFinite(n) ? n : (fallback || 0); }
 function findStudent_(id) { return rows_('Students').find(x => String(x.StudentID).toLowerCase() === clean_(id, 60).toLowerCase()); }
+function activeQuestions_() {
+  const cache = CacheService.getScriptCache(), key = 'active_questions_v1', cached = cache.get(key);
+  if (cached) { try { return JSON.parse(cached); } catch (error) {} }
+  const questions = rows_('Questions').filter(q => String(q.Status).toLowerCase() === 'active').sort((a,b) => String(a.QuestionID).localeCompare(String(b.QuestionID), undefined, {numeric:true}));
+  const safe = clientSafe_(questions.map(q => { const copy = Object.assign({}, q); delete copy._row; return copy; }));
+  try { cache.put(key, JSON.stringify(safe), 60); } catch (error) {}
+  return safe;
+}
+function clearQuestionCache_() { CacheService.getScriptCache().remove('active_questions_v1'); }
 function levelForXp_(xp) { let found = CONFIG.LEVELS[0]; CONFIG.LEVELS.forEach(x => { if (xp >= x.min) found = x; }); return found; }
 function publicError_(e) { console.error(e && e.stack || e); return {ok:false, error: e && e.message ? e.message : 'Something went wrong.'}; }
 function withLock_(fn) { const lock = LockService.getScriptLock(); lock.waitLock(20000); try { return fn(); } finally { lock.releaseLock(); } }

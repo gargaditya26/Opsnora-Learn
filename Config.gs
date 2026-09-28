@@ -16,6 +16,10 @@ const CONFIG = Object.freeze({
     XP_Log: ['TransactionID','Timestamp','StudentID','Source','ReferenceID','Description','XPChange','AddedBy'],
     Badges: ['BadgeID','BadgeName','Description','ConditionType','ConditionValue','Icon','Status'],
     Student_Badges: ['StudentID','BadgeID','EarnedDate'],
+    Quiz_Runs: ['RunID','StudentID','Topic','QuizNumber','QuestionIDs','StartedAt','CompletedAt','Score','TotalQuestions','CorrectAnswers','WrongAnswers','XPEarned','Status'],
+    Quiz_Run_Answers: ['RunID','StudentID','QuestionID','QuestionNumber','Question','SelectedAnswer','SelectedText','CorrectAnswer','CorrectText','Explanation','IsCorrect','XPEarned','ResponseTimeSeconds','AnsweredAt'],
+    Assignments: ['AssignmentID','Title','Topic','Difficulty','ShortDescription','Instructions','Requirements','StarterHTML','StarterCSS','XP','Order','Status','CreatedAt','UpdatedAt'],
+    Assignment_Submissions: ['SubmissionID','StudentID','AssignmentID','HTMLCode','CSSCode','Status','StartedAt','LastSavedAt','SubmittedAt','ReviewedAt','ReviewedBy','XPAwarded','TeacherRemarks'],
     Sessions: ['TokenHash','UserID','Role','CreatedAt','ExpiresAt','LastSeenAt','Status'],
     Settings: ['Key','Value','Description']
   }
