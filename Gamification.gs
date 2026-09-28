@@ -27,7 +27,7 @@ function badgeView_(student) {
   const earned=rows_('Student_Badges').filter(x=>x.StudentID===student.StudentID).reduce((m,x)=>(m[x.BadgeID]=x.EarnedDate,m),{});
   return rows_('Badges').filter(b=>String(b.Status).toLowerCase()==='active').map(b=>{
     const type=String(b.ConditionType),target=asNumber_(b.ConditionValue),current=type==='XP'?asNumber_(student.TotalXP):type==='CORRECT'?asNumber_(student.CorrectAnswers):type==='STREAK'?asNumber_(student.CurrentStreak):type==='ASSIGNMENTS'?completedAssignmentCount_(student.StudentID):type.indexOf('ASSIGNMENT_TOPIC_')===0?completedAssignmentCount_(student.StudentID,type.slice(17)):type.indexOf('TOPIC_')===0?topicCompletedCount_(progress,type.slice(6)):progress.length;
-    const unit=type==='XP'?'XP':type==='STREAK'?'days':'questions';
+    const unit=type==='XP'?'XP':type==='STREAK'?'days':type==='CORRECT'?'correct answers':type==='ASSIGNMENTS'||type.indexOf('ASSIGNMENT_TOPIC_')===0?'assignments':'questions';
     return {id:b.BadgeID,name:b.BadgeName,description:b.Description,requirement:b.Description,icon:b.Icon,earned:!!earned[b.BadgeID],earnedDate:earned[b.BadgeID]||null,current:Math.min(current,target),target:target,unit:unit,percent:target?Math.min(100,Math.round(current/target*100)):100};
   });
 }
