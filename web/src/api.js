@@ -66,5 +66,12 @@ export const api = {
   adminSavePlan: form => call('adminSavePlan',withToken({form})),
   adminSaveSubscription: form => call('adminSaveSubscription',withToken({form})),
   adminSaveInvoice: form => call('adminSaveInvoice',withToken({form})),
-  adminRecordPayment: form => call('adminRecordPayment',withToken({form}))
+  adminRecordPayment: form => call('adminRecordPayment',withToken({form})),
+  calendarData: (studentId,startDate,endDate) => call('calendarData',withToken({studentId,startDate,endDate})),
+  notifications: () => call('notifications',withToken()),
+  markNotificationRead: (notificationId,all=false) => call('markNotificationRead',withToken({notificationId,all})),
+  notificationPreferences: () => call('notificationPreferences',withToken()),
+  saveNotificationPreferences: form => call('saveNotificationPreferences',withToken({form})),
+  adminSaveNotificationRecipient: form => call('adminSaveNotificationRecipient',withToken({form})),
+  adminSaveScheduleRule: form => call('adminSaveScheduleRule',withToken({form}))
 };

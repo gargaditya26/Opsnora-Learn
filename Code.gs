@@ -42,6 +42,13 @@ function doPost(e) {
       adminSaveSubscription: function() { return adminSaveSubscription(payload.token, payload.form || {}); },
       adminSaveInvoice: function() { return adminSaveInvoice(payload.token, payload.form || {}); },
       adminRecordPayment: function() { return adminRecordPayment(payload.token, payload.form || {}); }
+      ,calendarData: function() { return getCalendarData(payload.token, payload.studentId, payload.startDate, payload.endDate); }
+      ,notifications: function() { return getNotifications(payload.token); }
+      ,markNotificationRead: function() { return markNotificationRead(payload.token, payload.notificationId, payload.all); }
+      ,notificationPreferences: function() { return getNotificationPreferences(payload.token); }
+      ,saveNotificationPreferences: function() { return saveNotificationPreferences(payload.token, payload.form || {}); }
+      ,adminSaveNotificationRecipient: function() { return adminSaveNotificationRecipient(payload.token, payload.form || {}); }
+      ,adminSaveScheduleRule: function() { return adminSaveScheduleRule(payload.token, payload.form || {}); }
     };
     if (!Object.prototype.hasOwnProperty.call(routes, action)) throw new Error('Unknown API action.');
     return jsonResponse_(routes[action]());

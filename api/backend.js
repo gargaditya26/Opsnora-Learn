@@ -6,7 +6,9 @@ const ALLOWED_ACTIONS = new Set([
   'adminAssignments', 'adminSaveAssignment', 'adminSubmission', 'adminReviewAssignment',
   'adminResetStudentProgress', 'parentDashboard', 'changeParentPin', 'adminParents', 'adminSaveParent',
   'adminParentOperations', 'adminSaveLearningSession', 'adminSavePlan',
-  'adminSaveSubscription', 'adminSaveInvoice', 'adminRecordPayment'
+  'adminSaveSubscription', 'adminSaveInvoice', 'adminRecordPayment',
+  'calendarData', 'notifications', 'markNotificationRead',
+  'notificationPreferences', 'saveNotificationPreferences', 'adminSaveNotificationRecipient', 'adminSaveScheduleRule'
 ]);
 
 export default async function handler(request, response) {

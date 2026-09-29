@@ -69,7 +69,7 @@ function submitQuizAnswer(token, runId, questionId, selectedAnswer, responseTime
     if(complete){
       const correctCount=allAnswers.filter(a=>a.IsCorrect===true||String(a.IsCorrect).toLowerCase()==='true').length,totalXp=allAnswers.reduce((n,a)=>n+asNumber_(a.XPEarned),0);
       updateRow_('Quiz_Runs',run._row,{CompletedAt:now_(),Score:correctCount,CorrectAnswers:correctCount,WrongAnswers:ids.length-correctCount,XPEarned:totalXp,Status:'Completed'});
-      const fresh=findStudent_(user.StudentID),badges=checkBadges_(fresh); return {ok:true,complete:true,result:quizResult_(fresh,run.RunID),badges:badges};
+      const fresh=findStudent_(user.StudentID),badges=checkBadges_(fresh); safeLearningEvent_(fresh.StudentID,'QUESTION',{topic:q.Topic,badges:badges}); return {ok:true,complete:true,result:quizResult_(fresh,run.RunID),badges:badges};
     }
     const nextId=ids[allAnswers.length],next=activeQuestions_().find(x=>x.QuestionID===nextId);
     return {ok:true,complete:false,current:allAnswers.length+1,total:ids.length,question:publicQuestion_(next,allAnswers.length+1,ids.length)};
@@ -102,7 +102,7 @@ function submitAnswer(token, questionId, selectedAnswer, responseTimeSeconds) {
     else append_('Progress',{StudentID:user.StudentID,QuestionID:q.QuestionID,Status:'Completed',FirstAttemptCorrect:correct&&attemptNo===1,AttemptsCount:attemptNo,XPEarned:xp,CompletedDate:now_()});
     updateStreak_(user); const attempted=asNumber_(user.TotalAttempted)+1, right=asNumber_(user.CorrectAnswers)+(correct?1:0), wrong=asNumber_(user.WrongAnswers)+(correct?0:1);
     updateRow_('Students',user._row,{TotalAttempted:attempted,CorrectAnswers:right,WrongAnswers:wrong,CurrentQuestion:attempted+1}); user.TotalAttempted=attempted; user.CorrectAnswers=right; user.WrongAnswers=wrong;
-    const fresh=findStudent_(user.StudentID), badges=checkBadges_(fresh);
+    const fresh=findStudent_(user.StudentID), badges=checkBadges_(fresh); safeLearningEvent_(fresh.StudentID,'QUESTION',{topic:q.Topic,badges:badges});
     return {ok:true,correct:correct,correctAnswer:String(q.CorrectAnswer).toUpperCase(),correctText:q['Option'+String(q.CorrectAnswer).toUpperCase()],explanation:q.Explanation,xpEarned:xp,badges:badges};
   }); } catch(e){ return publicError_(e); }
 }

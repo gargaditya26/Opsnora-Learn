@@ -7,8 +7,19 @@ function setupDatabase_() {
     else { const current = s.getRange(1,1,1,Math.max(s.getLastColumn(), headers.length)).getValues()[0]; headers.forEach((h,i) => { if (!current.includes(h)) s.getRange(1,s.getLastColumn()+1).setValue(h); }); }
     s.setFrozenRows(1); s.getRange(1,1,1,s.getLastColumn()).setFontWeight('bold').setBackground('#251252').setFontColor('#ffffff');
   });
-  seedBadges_(); seedSettings_(); seedStudent_(); seedQuestions_(); seedAssignments_();
+  seedBadges_(); seedSettings_(); seedStudent_(); seedQuestions_(); seedAssignments_(); seedScheduleRules_();
   return 'Database ready. Existing data is preserved, including parent account sheets and links.';
+}
+function seedScheduleRules_() {
+  const student=findStudent_('Aahana01'); if(!student)return;
+  const existing=new Set(rows_('ScheduleRules').filter(r=>String(r.StudentID)==='Aahana01').map(r=>String(r.RuleID)));
+  const created=now_(), rules=[
+    ['RULE_AAHANA_TUE','Aahana01','Tuesday','QUIZ','Weekly Quiz Practice','','','Online','Complete this week\'s quiz set.','Active',0,created,created],
+    ['RULE_AAHANA_WED','Aahana01','Wednesday','SESSION','Offline Learning Session','19:30','20:45','Offline','May extend until approximately 9:00 PM when required.','Active',0,created,created],
+    ['RULE_AAHANA_SAT','Aahana01','Saturday','SESSION','Offline Learning Session','10:00','11:30','Offline','Weekend offline learning session.','Active',0,created,created],
+    ['RULE_AAHANA_SUN','Aahana01','Sunday','ASSIGNMENT','Practical Assignment Window','','','Offline','Work on the current practical assignment.','Active',0,created,created],
+    ['RULE_AAHANA_MON','Aahana01','Monday','DEADLINE','Assignment Completion Window','','','Offline','Complete or review the current practical task.','Active',0,created,created]
+  ]; rules.filter(r=>!existing.has(r[0])).forEach(r=>sheet_('ScheduleRules').appendRow(r));
 }
 function setupDatabase() {
   const result=setupDatabase_();

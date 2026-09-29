@@ -44,6 +44,22 @@ The extended portal adds read-only Sessions, Assignments, Achievements, Reports,
 
 Optional support details can be added as rows in `Settings` using keys `SUPPORT_EMAIL`, `SUPPORT_PHONE`, and `SUPPORT_WHATSAPP`. Empty values are not shown. No payment gateway or PDF generator is enabled; payments are recorded only through an explicit administrator action and PDF controls remain disabled.
 
+## Calendar, notifications, and progress emails
+
+Students and linked parents have a shared read-only learning calendar with month/week views, event details, and an upcoming-events list. The initial `Aahana01` schedule is seeded idempotently from `Setup.gs`; administrators can edit recurring rules, create dated learning sessions, and configure approved progress-email recipients from Parent Operations. Authentication sessions remain in `Sessions`; scheduled classes remain in `Learning_Sessions`.
+
+In-app notifications persist read/unread state in `Notifications`. Progress emails are generated only by Apps Script after server-side learning events. They never include PINs, tokens, answer keys, or attachments. Parent email categories are enabled by default and can be changed from the parent profile. Failed email delivery is logged and never rolls back quiz, XP, assignment, badge, or streak updates.
+
+To enable this module:
+
+1. Copy new `CalendarNotifications.gs` and the updated `Code.gs`, `Config.gs`, `Setup.gs`, `Quiz.gs`, `Assignments.gs`, `Parent.gs`, and `ParentOperations.gs` into the existing Apps Script project.
+2. Run public `setupDatabase()` once. It creates missing tabs/columns and seeds the recurring schedule without deleting existing rows.
+3. Run `setupAutomationTriggers()` once and approve the requested Apps Script permissions. It creates one six-hour trigger for session/deadline reminders, weekly summaries, and failed-email retries.
+4. Add the parent's real email in **Admin → Parent Accounts**. Optional mentor/teacher recipients can be enabled in **Admin → Parent Operations**.
+5. Save, then publish a **new version** of the existing Web App deployment. The `/exec` URL normally remains unchanged.
+
+New sheets are `ScheduleRules`, `Notifications`, `EmailLog`, `NotificationPreferences`, and `NotificationRecipients`. Existing `Parents` and `Learning_Sessions` gain appended contact and scheduling columns. Google Apps Script `MailApp` quotas apply; delivery status and errors are visible in the administrator communication log.
+
 ## Public information pages
 
 The logged-out website includes public `/about`, `/privacy`, `/terms`, and `/contact` routes. These pages share the OPSNORA visual system and do not expose dashboards or learning data. The login page and each public page use the same information footer.

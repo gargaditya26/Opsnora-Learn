@@ -25,7 +25,7 @@ function getParentDashboard(token, requestedStudentId) {
     const settings=rows_('Settings').reduce((m,x)=>(m[String(x.Key)]=String(x.Value||''),m),{}), support={email:settings.SUPPORT_EMAIL||'',phone:settings.SUPPORT_PHONE||'',whatsapp:settings.SUPPORT_WHATSAPP||''};
     const children=links.map(link=>{const child=findStudent_(link.StudentID);return child?{id:child.StudentID,name:child.StudentName,className:child.Class,relationship:link.Relationship||'Parent/Guardian'}:null}).filter(Boolean);
     const relationship=(links.find(x=>String(x.StudentID)===studentId)||{}).Relationship||'Parent/Guardian';
-    return {ok:true,data:clientSafe_({parent:{id:parent.ParentID,name:parent.ParentName,relationship:relationship},children:children,selectedStudentId:studentId,student:{profile:base.profile,stats:base.stats,level:base.level,badges:base.badges,topics:base.topics,recent:base.recent,lastActive:student.LastActiveDate||null},attempts:attempts,quizRuns:quizRuns,assignments:assignments,sessions:learningSessions,billing:{plans:plans,subscription:currentSubscription,invoices:invoices,payments:payments},support:support})};
+    return {ok:true,data:clientSafe_({parent:{id:parent.ParentID,name:parent.ParentName,relationship:relationship,email:parent.Email||'',phone:parent.Phone||''},children:children,selectedStudentId:studentId,student:{profile:base.profile,stats:base.stats,level:base.level,badges:base.badges,topics:base.topics,recent:base.recent,lastActive:student.LastActiveDate||null},attempts:attempts,quizRuns:quizRuns,assignments:assignments,sessions:learningSessions,billing:{plans:plans,subscription:currentSubscription,invoices:invoices,payments:payments},support:support})};
   } catch(error){return publicError_(error);}
 }
 
@@ -52,7 +52,7 @@ function getAdminParents(token) {
   try {
     requireSession_(token,'ADMIN');
     const links=rows_('Parent_Students'), students=rows_('Students').filter(s=>String(s.Role||'STUDENT')==='STUDENT').map(s=>({id:s.StudentID,name:s.StudentName,className:s.Class,status:s.Status}));
-    const parents=rows_('Parents').map(p=>({id:p.ParentID,name:p.ParentName,status:p.Status,joinDate:p.JoinDate,children:links.filter(l=>String(l.ParentID)===String(p.ParentID)&&String(l.Status).toLowerCase()==='active').map(l=>{const s=findStudent_(l.StudentID);return {id:l.StudentID,name:s?s.StudentName:l.StudentID,className:s?s.Class:'',relationship:l.Relationship||'Parent/Guardian'};})}));
+    const parents=rows_('Parents').map(p=>({id:p.ParentID,name:p.ParentName,email:p.Email||'',phone:p.Phone||'',status:p.Status,joinDate:p.JoinDate,children:links.filter(l=>String(l.ParentID)===String(p.ParentID)&&String(l.Status).toLowerCase()==='active').map(l=>{const s=findStudent_(l.StudentID);return {id:l.StudentID,name:s?s.StudentName:l.StudentID,className:s?s.Class:'',relationship:l.Relationship||'Parent/Guardian'};})}));
     return {ok:true,data:clientSafe_({parents:parents,students:students})};
   } catch(error){return publicError_(error);}
 }
@@ -60,7 +60,7 @@ function getAdminParents(token) {
 function adminSaveParent(token, form) {
   try { return withLock_(function(){
     requireSession_(token,'ADMIN');
-    const parentId=clean_(form.parentId,40), name=clean_(form.parentName,80), studentId=clean_(form.studentId,60), relationship=clean_(form.relationship,40)||'Parent/Guardian', pin=String(form.pin||'');
+    const parentId=clean_(form.parentId,40), name=clean_(form.parentName,80), studentId=clean_(form.studentId,60), relationship=clean_(form.relationship,40)||'Parent/Guardian', pin=String(form.pin||''), email=clean_(form.email,150), phone=clean_(form.phone,30);
     if(!/^[A-Za-z0-9._-]{4,40}$/.test(parentId))throw new Error('Use a valid parent ID with at least 4 characters.');
     if(!name)throw new Error('Parent name is required.');
     const student=findStudent_(studentId);
@@ -69,9 +69,9 @@ function adminSaveParent(token, form) {
     let parent=findParent_(parentId), created=false;
     if(!parent){
       if(pin.length<6)throw new Error('A new parent PIN must contain at least 6 characters.');
-      append_('Parents',{ParentID:parentId,ParentName:name,PINHash:hash_(pin),JoinDate:now_(),Status:'Active'}); created=true;
+      append_('Parents',{ParentID:parentId,ParentName:name,PINHash:hash_(pin),JoinDate:now_(),Status:'Active',Email:email,Phone:phone}); created=true;
     } else {
-      const changes={ParentName:name,Status:'Active'};
+      const changes={ParentName:name,Status:'Active',Email:email,Phone:phone};
       if(pin){if(pin.length<6)throw new Error('Parent PIN must contain at least 6 characters.');changes.PINHash=hash_(pin);}
       updateRow_('Parents',parent._row,changes);
       if(pin)revokeSessions_(parentId);

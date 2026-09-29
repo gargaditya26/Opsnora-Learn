@@ -8,7 +8,7 @@
     "dev:ui": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "check": "node --check web/src/api.js && node --check web/src/config.js && node --check web/src/ads.js && node --check web/src/public-pages.js && node --check web/src/parent-config.js && node --check web/src/parent-views.js && node --check web/src/admin-parent-operations.js && node --check web/src/main.js && node --check api/backend.js"
+    "check": "node --check web/src/api.js && node --check web/src/config.js && node --check web/src/ads.js && node --check web/src/public-pages.js && node --check web/src/parent-config.js && node --check web/src/parent-views.js && node --check web/src/admin-parent-operations.js && node --check web/src/calendar.js && node --check web/src/notifications.js && node --check web/src/main.js && node --check api/backend.js"
   },
   "devDependencies": {
     "vite": "^7.1.7"
