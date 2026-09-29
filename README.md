@@ -34,6 +34,19 @@ The existing Apps Script HTML web app remains available for compatibility, but s
 
 `main.html` remains the standalone localStorage demo and does not use live Google Sheet data.
 
+## Public information pages
+
+The logged-out website includes public `/about`, `/privacy`, `/terms`, and `/contact` routes. These pages share the OPSNORA visual system and do not expose dashboards or learning data. The login page and each public page use the same information footer.
+
+Optional public configuration:
+
+```env
+VITE_SUPPORT_EMAIL=support@example.com
+VITE_ADSENSE_CLIENT_ID=
+```
+
+Only set `VITE_SUPPORT_EMAIL` after an official support mailbox exists. `VITE_ADSENSE_CLIENT_ID` is reserved for future integration; the current application does not load advertising scripts or render advertisements. Values prefixed with `VITE_` are public browser configuration and must never contain secrets or student information.
+
 ## Apps Script update
 
 The initialized Google Sheet does not need to be recreated or modified. Existing rows and accounts are preserved.

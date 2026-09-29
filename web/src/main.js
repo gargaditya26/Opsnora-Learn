@@ -1,5 +1,6 @@
 import './styles.css';
 import {api,session,ApiError} from './api.js';
+import {initPublicPages} from './public-pages.js';
 
 const state={user:session.get(),data:null,catalog:null,quizFilter:'All',question:null,selected:null,started:0,practiceTopic:'',quizRun:null,lastResult:null,assignment:null,assignmentDirty:false,autosaveTimer:null,adminCoding:null,review:null,resetStudent:null};
 const $=selector=>document.querySelector(selector);
@@ -136,4 +137,6 @@ $('#screen').addEventListener('input',event=>{if(event.target.id==='submissionFi
 $('#screen').addEventListener('change',event=>{if(event.target.id==='assignmentPicker')admin.fillAssignment(event.target.value)});
 $('#resetConfirmation').addEventListener('input',event=>{$('#resetConfirm').disabled=event.target.value!=='RESET'});$('#resetCancel').addEventListener('click',admin.closeReset);$('#resetConfirm').addEventListener('click',admin.resetProgress);
 
-if(state.user){auth.showApp();router.go(state.user.role==='ADMIN'?'admin':'dashboard')}
+if(!initPublicPages()){
+  if(state.user){auth.showApp();router.go(state.user.role==='ADMIN'?'admin':'dashboard')}
+}
