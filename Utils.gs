@@ -25,6 +25,7 @@ function safeEqual_(a, b) { a = String(a); b = String(b); if (a.length !== b.len
 function clean_(v, max) { return String(v == null ? '' : v).trim().slice(0, max || 500); }
 function asNumber_(v, fallback) { const n = Number(v); return Number.isFinite(n) ? n : (fallback || 0); }
 function findStudent_(id) { return rows_('Students').find(x => String(x.StudentID).toLowerCase() === clean_(id, 60).toLowerCase()); }
+function findParent_(id) { try { return rows_('Parents').find(x => String(x.ParentID).toLowerCase() === clean_(id, 60).toLowerCase()); } catch (error) { return null; } }
 function activeQuestions_() {
   const cache = CacheService.getScriptCache(), key = 'active_questions_v1', cached = cache.get(key);
   if (cached) { try { return JSON.parse(cached); } catch (error) {} }

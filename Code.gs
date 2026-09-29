@@ -31,7 +31,10 @@ function doPost(e) {
       adminSaveAssignment: function() { return adminSaveAssignment(payload.token, payload.form || {}); },
       adminSubmission: function() { return getAdminSubmission(payload.token, payload.submissionId); },
       adminReviewAssignment: function() { return reviewAssignmentSubmission(payload.token, payload.submissionId, payload.decision, payload.remarks); },
-      adminResetStudentProgress: function() { return resetStudentProgress(payload.token, payload.studentId); }
+      adminResetStudentProgress: function() { return resetStudentProgress(payload.token, payload.studentId); },
+      parentDashboard: function() { return getParentDashboard(payload.token, payload.studentId); },
+      adminParents: function() { return getAdminParents(payload.token); },
+      adminSaveParent: function() { return adminSaveParent(payload.token, payload.form || {}); }
     };
     if (!Object.prototype.hasOwnProperty.call(routes, action)) throw new Error('Unknown API action.');
     return jsonResponse_(routes[action]());

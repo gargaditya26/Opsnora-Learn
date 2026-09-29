@@ -10,6 +10,8 @@ const CONFIG = Object.freeze({
   ],
   SHEETS: {
     Students: ['StudentID','StudentName','PINHash','Class','Role','TotalXP','Level','CurrentQuestion','TotalAttempted','CorrectAnswers','WrongAnswers','CurrentStreak','LongestStreak','LastActiveDate','JoinDate','Status'],
+    Parents: ['ParentID','ParentName','PINHash','JoinDate','Status'],
+    Parent_Students: ['ParentID','StudentID','Relationship','LinkedAt','Status'],
     Questions: ['QuestionID','Topic','SubTopic','Difficulty','Question','OptionA','OptionB','OptionC','OptionD','CorrectAnswer','Explanation','XP','Status'],
     Attempts: ['AttemptID','Timestamp','StudentID','QuestionID','Topic','SelectedAnswer','CorrectAnswer','IsCorrect','AttemptNumber','XPEarned','ResponseTimeSeconds'],
     Progress: ['StudentID','QuestionID','Status','FirstAttemptCorrect','AttemptsCount','XPEarned','CompletedDate'],

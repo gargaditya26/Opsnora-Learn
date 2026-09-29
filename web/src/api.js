@@ -56,5 +56,8 @@ export const api = {
   adminSaveAssignment: form => call('adminSaveAssignment',withToken({form})),
   adminSubmission: submissionId => call('adminSubmission',withToken({submissionId})),
   adminReviewAssignment: (submissionId,decision,remarks) => call('adminReviewAssignment',withToken({submissionId,decision,remarks})),
-  adminResetStudentProgress: studentId => call('adminResetStudentProgress',withToken({studentId}))
+  adminResetStudentProgress: studentId => call('adminResetStudentProgress',withToken({studentId})),
+  parentDashboard: studentId => call('parentDashboard',withToken({studentId})),
+  adminParents: () => call('adminParents',withToken()),
+  adminSaveParent: form => call('adminSaveParent',withToken({form}))
 };

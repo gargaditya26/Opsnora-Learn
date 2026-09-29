@@ -34,6 +34,12 @@ The existing Apps Script HTML web app remains available for compatibility, but s
 
 `main.html` remains the standalone localStorage demo and does not use live Google Sheet data.
 
+## Parent portal
+
+Parent accounts use the same login form with the `PARENT` role and hashed PINs. A parent can only read students connected to that account through the `Parent_Students` sheet. The dashboard includes XP, level, solved questions, accuracy, current streak, earned badges, topic performance, quiz history, coding progress, teacher feedback, and selected-versus-correct answer review. Parent sessions cannot submit answers, award XP, reset progress, or call administrator actions.
+
+To enable the module, copy `Parent.gs` and the updated `Auth.gs`, `Code.gs`, `Config.gs`, `Utils.gs`, and `Setup.gs` into Apps Script. Run `setupDatabase_()` once to safely create the missing `Parents` and `Parent_Students` sheets; existing rows are not recreated or deleted. Deploy a new Apps Script version. Then sign in as an administrator on the website and use **Parent Accounts** to create a parent ID, set its initial PIN, and link the correct student.
+
 ## Public information pages
 
 The logged-out website includes public `/about`, `/privacy`, `/terms`, and `/contact` routes. These pages share the OPSNORA visual system and do not expose dashboards or learning data. The login page and each public page use the same information footer.

@@ -4,7 +4,7 @@ const ALLOWED_ACTIONS = new Set([
   'studentAssignments', 'openAssignment', 'saveAssignment', 'submitAssignment',
   'adminDashboard', 'studentDetail', 'awardManualXp', 'addQuestion',
   'adminAssignments', 'adminSaveAssignment', 'adminSubmission', 'adminReviewAssignment',
-  'adminResetStudentProgress'
+  'adminResetStudentProgress', 'parentDashboard', 'adminParents', 'adminSaveParent'
 ]);
 
 export default async function handler(request, response) {

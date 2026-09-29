@@ -8,7 +8,7 @@ function setupDatabase_() {
     s.setFrozenRows(1); s.getRange(1,1,1,s.getLastColumn()).setFontWeight('bold').setBackground('#251252').setFontColor('#ffffff');
   });
   seedBadges_(); seedSettings_(); seedStudent_(); seedQuestions_(); seedAssignments_();
-  return 'Database ready. Now run setStudentPin_("Aahana01", "your secure PIN") and createAdmin_(...).';
+  return 'Database ready. Existing data is preserved, including parent account sheets and links.';
 }
 function seedBadges_() {
   const existing = new Set(rows_('Badges').map(b => String(b.BadgeID)));
