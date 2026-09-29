@@ -58,6 +58,13 @@ export const api = {
   adminReviewAssignment: (submissionId,decision,remarks) => call('adminReviewAssignment',withToken({submissionId,decision,remarks})),
   adminResetStudentProgress: studentId => call('adminResetStudentProgress',withToken({studentId})),
   parentDashboard: studentId => call('parentDashboard',withToken({studentId})),
+  changeParentPin: (currentPin,newPin,confirmPin) => call('changeParentPin',withToken({currentPin,newPin,confirmPin})),
   adminParents: () => call('adminParents',withToken()),
-  adminSaveParent: form => call('adminSaveParent',withToken({form}))
+  adminSaveParent: form => call('adminSaveParent',withToken({form})),
+  adminParentOperations: () => call('adminParentOperations',withToken()),
+  adminSaveLearningSession: form => call('adminSaveLearningSession',withToken({form})),
+  adminSavePlan: form => call('adminSavePlan',withToken({form})),
+  adminSaveSubscription: form => call('adminSaveSubscription',withToken({form})),
+  adminSaveInvoice: form => call('adminSaveInvoice',withToken({form})),
+  adminRecordPayment: form => call('adminRecordPayment',withToken({form}))
 };

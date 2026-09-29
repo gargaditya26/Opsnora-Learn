@@ -10,6 +10,11 @@ function setupDatabase_() {
   seedBadges_(); seedSettings_(); seedStudent_(); seedQuestions_(); seedAssignments_();
   return 'Database ready. Existing data is preserved, including parent account sheets and links.';
 }
+function setupDatabase() {
+  const result=setupDatabase_();
+  Logger.log(result);
+  return result;
+}
 function seedBadges_() {
   const existing = new Set(rows_('Badges').map(b => String(b.BadgeID)));
   [

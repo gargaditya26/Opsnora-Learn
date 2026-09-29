@@ -9,16 +9,39 @@ function getParentDashboard(token, requestedStudentId) {
     if(!student||String(student.Status).toLowerCase()!=='active'||String(student.Role||'STUDENT')!=='STUDENT')throw new Error('Linked student account is unavailable.');
 
     const base=studentDashboard_(student), questionMap=rows_('Questions').reduce((m,q)=>(m[String(q.QuestionID)]=q,m),{});
-    const attempts=rows_('Attempts').filter(x=>String(x.StudentID)===studentId).slice(-100).reverse().map(a=>{
+    const attempts=rows_('Attempts').filter(x=>String(x.StudentID)===studentId).slice().reverse().map(a=>{
       const q=questionMap[String(a.QuestionID)]||{}, selected=String(a.SelectedAnswer||'').toUpperCase(), correct=String(a.CorrectAnswer||q.CorrectAnswer||'').toUpperCase();
       return {id:a.AttemptID,date:a.Timestamp,questionId:a.QuestionID,question:q.Question||'Question unavailable',topic:a.Topic||q.Topic||'',selectedAnswer:selected,selectedText:answerText_(q,selected),correctAnswer:correct,correctText:answerText_(q,correct),isCorrect:a.IsCorrect===true||String(a.IsCorrect).toLowerCase()==='true',explanation:q.Explanation||'',xp:asNumber_(a.XPEarned),responseTime:asNumber_(a.ResponseTimeSeconds)};
     });
     const quizRuns=rows_('Quiz_Runs').filter(x=>String(x.StudentID)===studentId&&String(x.Status)==='Completed').slice(-20).reverse().map(r=>({id:r.RunID,topic:r.Topic,quizNumber:asNumber_(r.QuizNumber),score:asNumber_(r.Score),total:asNumber_(r.TotalQuestions),correct:asNumber_(r.CorrectAnswers),wrong:asNumber_(r.WrongAnswers),xp:asNumber_(r.XPEarned),completedAt:r.CompletedAt}));
     const assignmentMap=rows_('Assignments').reduce((m,a)=>(m[String(a.AssignmentID)]=a,m),{});
-    const assignments=rows_('Assignment_Submissions').filter(x=>String(x.StudentID)===studentId).slice().reverse().map(s=>({id:s.AssignmentID,title:(assignmentMap[String(s.AssignmentID)]||{}).Title||s.AssignmentID,topic:(assignmentMap[String(s.AssignmentID)]||{}).Topic||'',status:s.Status,lastSavedAt:s.LastSavedAt,submittedAt:s.SubmittedAt,reviewedAt:s.ReviewedAt,xpAwarded:asNumber_(s.XPAwarded),teacherRemarks:s.TeacherRemarks||''}));
+    const assignments=rows_('Assignment_Submissions').filter(x=>String(x.StudentID)===studentId).slice().reverse().map(s=>{const a=assignmentMap[String(s.AssignmentID)]||{};return {id:s.AssignmentID,title:a.Title||s.AssignmentID,topic:a.Topic||'',difficulty:a.Difficulty||'',assignedDate:s.StartedAt||null,dueDate:a.DueDate||null,status:s.Status,xpReward:asNumber_(a.XP),lastSavedAt:s.LastSavedAt,submittedAt:s.SubmittedAt,reviewedAt:s.ReviewedAt,xpAwarded:asNumber_(s.XPAwarded),teacherRemarks:s.TeacherRemarks||''};});
+    const learningSessions=rows_('Learning_Sessions').filter(x=>String(x.StudentID)===studentId).map(s=>({id:s.SessionID,date:s.Date,startTime:s.StartTime,duration:s.Duration,topic:s.Topic,status:s.Status,teacherNote:s.TeacherNote||'',createdAt:s.CreatedAt,updatedAt:s.UpdatedAt})).sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const plans=rows_('Plans').filter(p=>String(p.Status).toLowerCase()==='active').map(p=>({id:p.PlanID,name:p.PlanName,monthlyFee:p.MonthlyFee===''?null:asNumber_(p.MonthlyFee),billingCycle:p.BillingCycle||'Monthly',features:String(p.Features||'').split('|').map(cleanFeature_).filter(Boolean)}));
+    const subscriptions=rows_('Subscriptions').filter(s=>String(s.StudentID)===studentId&&String(s.ParentID)===parentId).slice().reverse(), subscription=subscriptions[0]||null;
+    const invoices=rows_('Invoices').filter(i=>String(i.StudentID)===studentId&&String(i.ParentID)===parentId).slice().reverse().map(i=>({id:i.InvoiceID,subscriptionId:i.SubscriptionID,billingPeriod:i.BillingPeriod,description:i.Description,baseAmount:asNumber_(i.BaseAmount),discount:asNumber_(i.Discount),additionalCharges:asNumber_(i.AdditionalCharges),totalAmount:asNumber_(i.TotalAmount),dueDate:i.DueDate||null,status:i.Status,createdAt:i.CreatedAt,notes:i.Notes||''}));
+    const invoiceIds=new Set(invoices.map(i=>String(i.id))), payments=rows_('Payments').filter(p=>String(p.StudentID)===studentId&&String(p.ParentID)===parentId&&invoiceIds.has(String(p.InvoiceID))).map(p=>({id:p.PaymentID,invoiceId:p.InvoiceID,amountPaid:asNumber_(p.AmountPaid),paymentDate:p.PaymentDate,paymentMode:p.PaymentMode,transactionReference:p.TransactionReference,status:p.Status}));
+    const planMap=plans.reduce((m,p)=>(m[p.id]=p,m),{}), currentSubscription=subscription?{id:subscription.SubscriptionID,planId:subscription.PlanID,plan:planMap[String(subscription.PlanID)]||null,startDate:subscription.StartDate||null,nextBillingDate:subscription.NextBillingDate||null,status:subscription.Status||'',billingCycle:(planMap[String(subscription.PlanID)]||{}).billingCycle||''}:null;
+    const settings=rows_('Settings').reduce((m,x)=>(m[String(x.Key)]=String(x.Value||''),m),{}), support={email:settings.SUPPORT_EMAIL||'',phone:settings.SUPPORT_PHONE||'',whatsapp:settings.SUPPORT_WHATSAPP||''};
     const children=links.map(link=>{const child=findStudent_(link.StudentID);return child?{id:child.StudentID,name:child.StudentName,className:child.Class,relationship:link.Relationship||'Parent/Guardian'}:null}).filter(Boolean);
-    return {ok:true,data:clientSafe_({parent:{id:parent.ParentID,name:parent.ParentName},children:children,selectedStudentId:studentId,student:{profile:base.profile,stats:base.stats,level:base.level,badges:base.badges,topics:base.topics,recent:base.recent,lastActive:student.LastActiveDate||null},attempts:attempts,quizRuns:quizRuns,assignments:assignments})};
+    const relationship=(links.find(x=>String(x.StudentID)===studentId)||{}).Relationship||'Parent/Guardian';
+    return {ok:true,data:clientSafe_({parent:{id:parent.ParentID,name:parent.ParentName,relationship:relationship},children:children,selectedStudentId:studentId,student:{profile:base.profile,stats:base.stats,level:base.level,badges:base.badges,topics:base.topics,recent:base.recent,lastActive:student.LastActiveDate||null},attempts:attempts,quizRuns:quizRuns,assignments:assignments,sessions:learningSessions,billing:{plans:plans,subscription:currentSubscription,invoices:invoices,payments:payments},support:support})};
   } catch(error){return publicError_(error);}
+}
+
+function cleanFeature_(value){return clean_(value,120);}
+
+function changeParentPin(token, currentPin, newPin, confirmPin) {
+  try { return withLock_(function(){
+    const parent=requireSession_(token,'PARENT');
+    if(!parent.PINHash||!safeEqual_(parent.PINHash,hash_(currentPin)))throw new Error('Current PIN is incorrect.');
+    if(String(newPin).length<6)throw new Error('New PIN must contain at least 6 characters.');
+    if(String(newPin)!==String(confirmPin))throw new Error('New PIN and confirmation do not match.');
+    if(safeEqual_(parent.PINHash,hash_(newPin)))throw new Error('New PIN must be different from the current PIN.');
+    updateRow_('Parents',parent._row,{PINHash:hash_(newPin)});
+    revokeSessions_(parent.ParentID);
+    return {ok:true,sessionsRevoked:true};
+  }); } catch(error){return publicError_(error);}
 }
 
 function answerText_(question, answer) {

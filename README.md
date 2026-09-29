@@ -38,7 +38,11 @@ The existing Apps Script HTML web app remains available for compatibility, but s
 
 Parent accounts use the same login form with the `PARENT` role and hashed PINs. A parent can only read students connected to that account through the `Parent_Students` sheet. The dashboard includes XP, level, solved questions, accuracy, current streak, earned badges, topic performance, quiz history, coding progress, teacher feedback, and selected-versus-correct answer review. Parent sessions cannot submit answers, award XP, reset progress, or call administrator actions.
 
-To enable the module, copy `Parent.gs` and the updated `Auth.gs`, `Code.gs`, `Config.gs`, `Utils.gs`, and `Setup.gs` into Apps Script. Run `setupDatabase_()` once to safely create the missing `Parents` and `Parent_Students` sheets; existing rows are not recreated or deleted. Deploy a new Apps Script version. Then sign in as an administrator on the website and use **Parent Accounts** to create a parent ID, set its initial PIN, and link the correct student.
+To enable the module, copy `Parent.gs`, `ParentOperations.gs`, and the updated `Auth.gs`, `Code.gs`, `Config.gs`, `Utils.gs`, and `Setup.gs` into Apps Script. Run the public `setupDatabase()` wrapper once to safely create the missing parent, learning-session, and billing sheets; existing rows are not recreated or deleted. Deploy a new Apps Script version. Then sign in as an administrator on the website and use **Parent Accounts** to create a parent ID, set its initial PIN, and link the correct student.
+
+The extended portal adds read-only Sessions, Assignments, Achievements, Reports, Billing & Plans, Profile, Change PIN, and Support pages. Because `Sessions` is already the authentication-session table, scheduled classes are stored separately in `Learning_Sessions`. Billing uses `Plans`, `Subscriptions`, `Invoices`, and `Payments`; setup only creates missing tabs and headers. Placeholder plan display labels live in `web/src/parent-config.js` and do not enforce entitlements.
+
+Optional support details can be added as rows in `Settings` using keys `SUPPORT_EMAIL`, `SUPPORT_PHONE`, and `SUPPORT_WHATSAPP`. Empty values are not shown. No payment gateway or PDF generator is enabled; payments are recorded only through an explicit administrator action and PDF controls remain disabled.
 
 ## Public information pages
 

@@ -22,6 +22,11 @@ const CONFIG = Object.freeze({
     Quiz_Run_Answers: ['RunID','StudentID','QuestionID','QuestionNumber','Question','SelectedAnswer','SelectedText','CorrectAnswer','CorrectText','Explanation','IsCorrect','XPEarned','ResponseTimeSeconds','AnsweredAt'],
     Assignments: ['AssignmentID','Title','Topic','Difficulty','ShortDescription','Instructions','Requirements','StarterHTML','StarterCSS','XP','Order','Status','CreatedAt','UpdatedAt'],
     Assignment_Submissions: ['SubmissionID','StudentID','AssignmentID','HTMLCode','CSSCode','Status','StartedAt','LastSavedAt','SubmittedAt','ReviewedAt','ReviewedBy','XPAwarded','TeacherRemarks'],
+    Learning_Sessions: ['SessionID','StudentID','Date','StartTime','Duration','Topic','Status','TeacherNote','CreatedAt','UpdatedAt'],
+    Plans: ['PlanID','PlanName','MonthlyFee','BillingCycle','Features','Status','CreatedAt','UpdatedAt'],
+    Subscriptions: ['SubscriptionID','StudentID','ParentID','PlanID','StartDate','NextBillingDate','Status','CreatedAt','UpdatedAt'],
+    Invoices: ['InvoiceID','StudentID','ParentID','SubscriptionID','BillingPeriod','Description','BaseAmount','Discount','AdditionalCharges','TotalAmount','DueDate','Status','CreatedAt','Notes'],
+    Payments: ['PaymentID','InvoiceID','StudentID','ParentID','AmountPaid','PaymentDate','PaymentMode','TransactionReference','Status','ReceivedBy','CreatedAt'],
     Sessions: ['TokenHash','UserID','Role','CreatedAt','ExpiresAt','LastSeenAt','Status'],
     Settings: ['Key','Value','Description']
   }

@@ -33,8 +33,15 @@ function doPost(e) {
       adminReviewAssignment: function() { return reviewAssignmentSubmission(payload.token, payload.submissionId, payload.decision, payload.remarks); },
       adminResetStudentProgress: function() { return resetStudentProgress(payload.token, payload.studentId); },
       parentDashboard: function() { return getParentDashboard(payload.token, payload.studentId); },
+      changeParentPin: function() { return changeParentPin(payload.token, payload.currentPin, payload.newPin, payload.confirmPin); },
       adminParents: function() { return getAdminParents(payload.token); },
-      adminSaveParent: function() { return adminSaveParent(payload.token, payload.form || {}); }
+      adminSaveParent: function() { return adminSaveParent(payload.token, payload.form || {}); },
+      adminParentOperations: function() { return getAdminParentOperations(payload.token); },
+      adminSaveLearningSession: function() { return adminSaveLearningSession(payload.token, payload.form || {}); },
+      adminSavePlan: function() { return adminSavePlan(payload.token, payload.form || {}); },
+      adminSaveSubscription: function() { return adminSaveSubscription(payload.token, payload.form || {}); },
+      adminSaveInvoice: function() { return adminSaveInvoice(payload.token, payload.form || {}); },
+      adminRecordPayment: function() { return adminRecordPayment(payload.token, payload.form || {}); }
     };
     if (!Object.prototype.hasOwnProperty.call(routes, action)) throw new Error('Unknown API action.');
     return jsonResponse_(routes[action]());
