@@ -1,4 +1,5 @@
 import {publicConfig} from './config.js';
+import logoUrl from '../opsnora-logo.png';
 
 const routes={
   '/about':{
@@ -81,6 +82,6 @@ export function initPublicPages(){
   document.querySelector('#appView')?.classList.add('hidden');
   const view=document.querySelector('#publicView');
   view.classList.remove('hidden');
-  view.innerHTML=`<header class="public-header"><a class="public-brand" href="/"><span>O</span><b>OPSNORA <em>LEARN</em></b></a><a class="back-login" href="/">Back to Login →</a></header><main class="public-main"><div class="public-hero"><p class="eyebrow">${page.kicker}</p><h1>${page.heading}</h1><p>${page.intro}</p></div><article class="public-content">${page.content}</article><a class="secondary public-back" href="/">← Back to Login</a></main>${footer()}`;
+  view.innerHTML=`<header class="public-header"><a class="public-brand brand-lockup" href="/"><img src="${logoUrl}" alt="OPSNORA"><b>LEARN</b></a><a class="back-login" href="/">Back to Login →</a></header><main class="public-main"><div class="public-hero"><p class="eyebrow">${page.kicker}</p><h1>${page.heading}</h1><p>${page.intro}</p></div><article class="public-content">${page.content}</article><a class="secondary public-back" href="/">← Back to Login</a></main>${footer()}`;
   return true
 }
